@@ -26,28 +26,58 @@ public class BuferCircular implements IBufer{
 		bufer[posEscritura] = valor;
 		contadorOcupado++;
 		posEscritura = (posEscritura + 1) % bufer.length;
-		mostrarSalida();
 		mostrarEstado(hiloLlamador+" consigue escribir "+valor);
+		mostrarSalida();
 		
 		notify();
 	}
 	
 	@Override
 	public synchronized void mostrarSalida(){
+		String salida = "(huecos ocupados: "+contadorOcupado+")\nhuecos: ";
+		
+		salida+="\n";
+		
 		for(int i = 0; i < bufer.length; i++){
-			System.out.println(bufer[i]+"--");
+			salida+=" "+bufer[i]+"  ";
 		}
+		
+		salida+="\n";
+		
+		for(int i = 0; i < bufer.length; i++){
+			salida+="--- ";
+		}
+		
+		salida+="\n";
+		
+		for(int i = 0; i < bufer.length; i++){
+			if( i == posEscritura && posEscritura == posLectura){
+				salida+="EL  ";
+			}
+			else if (i == posEscritura){
+				salida+="E  ";
+			}
+			else if (i == posLectura){
+				salida+="L  ";
+			}
+			else{
+				salida+="   ";
+			}
+			
+		}
+		
+		System.out.println(salida);
+		
 	}
 
-	//TODO HACERLO
 	@Override
-	public int leer() {
+	public synchronized int leer() {
 
 		String hiloLlamador = Thread.currentThread().getName();
 		int valor;
 		
 
-		while(contadorOcupado == bufer.length){			
+		while(contadorOcupado == 0){			
 			try {
 				System.out.println(hiloLlamador+" trata de leer");
 				mostrarEstado("Buffer vacio "+hiloLlamador+" espera");
@@ -61,9 +91,8 @@ public class BuferCircular implements IBufer{
 		valor = bufer[posLectura];
 		contadorOcupado--;
 		posLectura = (posLectura + 1) % bufer.length;
-		mostrarSalida();
 		mostrarEstado(hiloLlamador+" consigue leer "+valor);
-		
+		mostrarSalida();
 		notify();
 		
 		return valor;

@@ -14,7 +14,7 @@ class Productor extends Thread{
 	
 	@Override
 	public void run(){
-		for (int i = 0; i<10; i++){
+		for (int i = 0; i<100; i++){
 			try{
 				Thread.sleep((int)Math.random() * 3001);
 				compartido.escribir(i);
@@ -47,7 +47,7 @@ class Consumidor extends Thread{
 		
 		int suma = 0;
 		
-		for (int i = 0; i<20; i++){
+		for (int i = 0; i<25; i++){
 			try{
 				Thread.sleep((int)Math.random() * 3001);
 				suma += compartido.leer();
@@ -69,14 +69,23 @@ public class PruebaBufferCircular {
 		
 		Productor prod = new Productor(elBuffer);
 		Consumidor consu = new Consumidor(elBuffer);
+		Consumidor consu2 = new Consumidor(elBuffer);
+		Consumidor consu3 = new Consumidor(elBuffer);
+		Consumidor consu4 = new Consumidor(elBuffer);
 		
 		prod.start();
 		consu.start();
+		consu2.start();
+		consu3.start();
+		consu4.start();
 		
 	
 		try{
 			prod.join(); 
 			consu.join();
+			consu2.join();
+			consu3.join();
+			consu4.join();
 		}catch(InterruptedException ex){
 			
 		}
